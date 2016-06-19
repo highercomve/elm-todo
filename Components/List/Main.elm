@@ -1,10 +1,22 @@
-module Components.List.Main where
-
+module Components.List.Main exposing (Model, Actions, init, view, update)
+import Components.Task.Main as Task
 import Html exposing (ul)
-import Components.Item.Main as TodoItem
+import Html.App as App
+import String
 
-view address tasks =
-  ul []
-    (List.map (TodoItem.view address) tasks)
+type Actions = NoOp
+
+type alias Model = List Task.Model
+
+init : Model
+init = []
+
+update action model = 
+  case action of
+    NoOp -> 
+      model
+
+view model =
+  ul [] (List.map Task.view model)
 
 
