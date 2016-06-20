@@ -4,6 +4,8 @@ import Html.Attributes as Attr
 import Html.App as App
 import Components.Form.Main as TodoForm
 import Components.List.Main as TodoList
+import Helpers.Main as Helpers
+import Helpers.Styles as AppStyles
 
 main =
   App.beginnerProgram
@@ -26,33 +28,12 @@ type alias Model =
   , visibility: VisibilityOption
   }
 
-init: Model
+init : Model
 init = 
   { tasks = TodoList.init
   , newTask = TodoForm.init
   , visibility = All
   }
-
-newTasks model newTaskForm = 
-  if newTaskForm.saveTask == True then 
-    let 
-      resetTask = (\task -> {
-          task |
-          description = ""
-      })
-    in
-      { model |
-        tasks = model.tasks ++ [newTaskForm.task]
-      , newTask = 
-        { newTaskForm | 
-          saveTask = False
-        , task = resetTask(newTaskForm.task)         
-        }
-      }
-  else
-    { model |
-      newTask = newTaskForm 
-    }
 
 update action model = 
   case action of
@@ -62,7 +43,7 @@ update action model =
     FormActions msg -> 
       let 
         newTaskForm = TodoForm.update msg model.newTask   
-        newModel = newTasks model newTaskForm
+        newModel = Helpers.newTasks model newTaskForm
       in
         newModel
     
@@ -72,8 +53,14 @@ update action model =
         tasks = TodoList.update msg model.tasks
       }
 
+css path =
+  node "link" [ Attr.rel "stylesheet", Attr.href path ] []
+
 view model =
-  div [] 
+  div 
+    [ Attr.class "todo-app" 
+    , Attr.style AppStyles.app
+    ] 
     [ App.map FormActions (TodoForm.view model.newTask)
     , App.map ListActions (TodoList.view model.tasks)
     ]

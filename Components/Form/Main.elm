@@ -1,5 +1,6 @@
 module Components.Form.Main exposing (Model, Actions, init, update, view) 
 import Components.Task.Main as Task
+import Components.Form.Styles as Styles 
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
@@ -69,29 +70,35 @@ update action model =
 
 
 view model =
-  header []
-    [ div []
-      [ input
-          [ id "new-todo"
-          , placeholder "What needs to be done?"
-          , autofocus True
-          , value model.task.description
-          , name "newTodo"
-          , on "input" (Json.map SetNewTaskDescription targetValue)        
-          , onEnter model
-          ]
-          []
-      , showError model 
-      ]
+  header 
+    [ class "todo-header" 
+    , style Styles.header
+    ]
+    [ div 
+        [ class "todo-form" ]
+        [ input
+            [ id "new-todo"
+            , style Styles.input
+            , placeholder "What needs to be done?"
+            , autofocus True
+            , value model.task.description
+            , name "newTodo"
+            , on "input" (Json.map SetNewTaskDescription targetValue)        
+            , onEnter model
+            ]
+            []
+        , div 
+            [ class "form-errors"]
+            (showError model)
+        ]
     ]
 
 showError model = 
   if model.hasError then 
-    div []
-      [ p [] [ text model.error ] ]
+    [ p [] [ text model.error ] ]
   else 
-    div [] []
-
+    []
+  
 onEnter model =
   let
     tagger code = 

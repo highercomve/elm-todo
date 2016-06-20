@@ -1,22 +1,42 @@
 module Components.List.Main exposing (Model, Actions, init, view, update)
 import Components.Task.Main as Task
+import Components.List.Styles as Styles
 import Html exposing (ul)
+import Html.Attributes as Attr
 import Html.App as App
+import Helpers.Styles as Styles
 import String
 
 type Actions = NoOp
+  | ModifyTask Int Task.Actions
 
 type alias Model = List Task.Model
 
 init : Model
 init = []
 
+updateHelper targetId msg task = 
+  if task.id == targetId then
+    Task.update msg task
+  else 
+    Just task
+ 
 update action model = 
   case action of
-    NoOp -> 
+    NoOp ->
       model
+    
+    ModifyTask id action -> 
+      List.filterMap (updateHelper id action) model 
+
+mapTodos task = 
+  App.map (ModifyTask task.id) (Task.view task)
 
 view model =
-  ul [] (List.map Task.view model)
+  ul 
+    [ Attr.class "todo-list"
+    , Attr.style Styles.general
+    ] 
+    (List.map mapTodos model)
 
 
