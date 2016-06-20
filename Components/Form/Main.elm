@@ -70,28 +70,30 @@ update action model =
 
 
 view model =
-  header 
-    [ class "todo-header" 
-    , style Styles.header
-    ]
-    [ div 
-        [ class "todo-form" 
-        , style Styles.form
+  div [ style Styles.general ]
+    [ header 
+        [ class "todo-header" 
+        , style Styles.header
         ]
-        [ input
-            [ id "new-todo"
-            , style Styles.input
-            , placeholder "What needs to be done?"
-            , autofocus True
-            , value model.task.description
-            , name "newTodo"
-            , on "input" (Json.map SetNewTaskDescription targetValue)        
-            , onEnter model
+        [ div 
+            [ class "todo-form" 
+            , style Styles.form
             ]
-            []
-        , div 
-            [ class "form-errors"]
-            (showError model)
+            [ input
+                [ id "new-todo"
+                , style Styles.input
+                , placeholder "What needs to be done?"
+                , autofocus True
+                , value model.task.description
+                , name "newTodo"
+                , on "input" (Json.map SetNewTaskDescription targetValue)        
+                , onEnter model
+                ]
+                []
+            , div 
+                [ class "form-errors"]
+                (showError model)
+            ]
         ]
     ]
 
