@@ -75,7 +75,9 @@ view model =
     , style Styles.header
     ]
     [ div 
-        [ class "todo-form" ]
+        [ class "todo-form" 
+        , style Styles.form
+        ]
         [ input
             [ id "new-todo"
             , style Styles.input

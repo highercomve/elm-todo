@@ -4,7 +4,12 @@ general =
   []
 
 header = 
-  [ ("padding", "1em 0") ]
+  [ ("padding", "1em 0") 
+  ]
+
+form = 
+  [ ("padding", "0 1em")  
+  ]
 
 input =
   [ ("width", "100%") 
