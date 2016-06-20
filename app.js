@@ -7270,50 +7270,79 @@ var _user$project$Components_FilterList_Styles$float = _elm_lang$core$Native_Lis
 		{ctor: '_Tuple2', _0: 'box-shadow', _1: '0 0px 1px 0 rgba(0,0,0,0.3)'}
 	]);
 
-var _user$project$Components_FilterList_Main$taskCounter = F2(
+var _user$project$Components_FilterList_Main$visibleTasks = F2(
 	function (filter, tasks) {
 		var _p0 = filter;
-		switch (_p0.ctor) {
-			case 'All':
-				return _elm_lang$core$List$length(tasks);
+		switch (_p0) {
 			case 'Completed':
-				return _elm_lang$core$List$length(
-					A2(
-						_elm_lang$core$List$filter,
-						function (task) {
-							return task.completed;
-						},
-						tasks));
+				return A2(
+					_elm_lang$core$List$filter,
+					function (task) {
+						return task.completed;
+					},
+					tasks);
+			case 'Incompleted':
+				return A2(
+					_elm_lang$core$List$filter,
+					function (task) {
+						return _elm_lang$core$Basics$not(task.completed);
+					},
+					tasks);
 			default:
-				return _elm_lang$core$List$length(
-					A2(
-						_elm_lang$core$List$filter,
-						function (task) {
-							return _elm_lang$core$Basics$not(task.completed);
-						},
-						tasks));
+				return tasks;
 		}
 	});
-var _user$project$Components_FilterList_Main$filterToString = function (filter) {
-	var _p1 = filter;
-	switch (_p1.ctor) {
-		case 'All':
-			return 'All';
-		case 'Incompleted':
-			return 'Pending';
-		default:
-			return 'Done';
-	}
-};
+var _user$project$Components_FilterList_Main$taskCounter = F2(
+	function (filter, tasks) {
+		return _elm_lang$core$List$length(
+			A2(_user$project$Components_FilterList_Main$visibleTasks, filter, tasks));
+	});
 var _user$project$Components_FilterList_Main$update = F2(
 	function (action, model) {
-		var _p2 = action;
-		if (_p2.ctor === 'NoOp') {
+		var _p1 = action;
+		if (_p1.ctor === 'NoOp') {
 			return model;
 		} else {
-			return _p2._0;
+			return _p1._0;
 		}
 	});
+var _user$project$Components_FilterList_Main$visibilityOptions = {incompleted: 'Incompleted', all: 'All', completed: 'Completed'};
+var _user$project$Components_FilterList_Main$init = _user$project$Components_FilterList_Main$visibilityOptions.all;
+var _user$project$Components_FilterList_Main$counterMessages = function (tasks) {
+	var all = A2(_user$project$Components_FilterList_Main$taskCounter, _user$project$Components_FilterList_Main$visibilityOptions.all, tasks);
+	var pending = A2(_user$project$Components_FilterList_Main$taskCounter, _user$project$Components_FilterList_Main$visibilityOptions.incompleted, tasks);
+	var task_ = (_elm_lang$core$Native_Utils.cmp(pending, 1) > 0) ? 'tasks ' : 'task';
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$style(_user$project$Components_FilterList_Styles$counters)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(pending)),
+						_elm_lang$html$Html$text(
+						A2(_elm_lang$core$Basics_ops['++'], ' pending ', task_))
+					])),
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(', of '),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(all))
+					]))
+			]));
+};
 var _user$project$Components_FilterList_Main$ChangeFilter = function (a) {
 	return {ctor: 'ChangeFilter', _0: a};
 };
@@ -7331,51 +7360,9 @@ var _user$project$Components_FilterList_Main$filterLink = F2(
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text(
-					_user$project$Components_FilterList_Main$filterToString(filter))
+					_elm_lang$html$Html$text(filter)
 				]));
 	});
-var _user$project$Components_FilterList_Main$NoOp = {ctor: 'NoOp'};
-var _user$project$Components_FilterList_Main$Completed = {ctor: 'Completed'};
-var _user$project$Components_FilterList_Main$Incompleted = {ctor: 'Incompleted'};
-var _user$project$Components_FilterList_Main$All = {ctor: 'All'};
-var _user$project$Components_FilterList_Main$init = _user$project$Components_FilterList_Main$All;
-var _user$project$Components_FilterList_Main$counterMessages = function (tasks) {
-	var pending = A2(_user$project$Components_FilterList_Main$taskCounter, _user$project$Components_FilterList_Main$Incompleted, tasks);
-	var task_ = (_elm_lang$core$Native_Utils.cmp(pending, 1) > 0) ? 'tasks ' : 'task';
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$style(_user$project$Components_FilterList_Styles$counters)
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$html$Html$span,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(
-							A2(_user$project$Components_FilterList_Main$taskCounter, _user$project$Components_FilterList_Main$Incompleted, tasks))),
-						_elm_lang$html$Html$text(
-						A2(_elm_lang$core$Basics_ops['++'], ' pending ', task_))
-					])),
-				A2(
-				_elm_lang$html$Html$span,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(', of '),
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(
-							A2(_user$project$Components_FilterList_Main$taskCounter, _user$project$Components_FilterList_Main$All, tasks)))
-					]))
-			]));
-};
 var _user$project$Components_FilterList_Main$view = F2(
 	function (model, tasks) {
 		return A2(
@@ -7413,7 +7400,7 @@ var _user$project$Components_FilterList_Main$view = F2(
 										]),
 									_elm_lang$core$Native_List.fromArray(
 										[
-											A2(_user$project$Components_FilterList_Main$filterLink, _user$project$Components_FilterList_Main$All, model)
+											A2(_user$project$Components_FilterList_Main$filterLink, _user$project$Components_FilterList_Main$visibilityOptions.all, model)
 										])),
 									A2(
 									_elm_lang$html$Html$li,
@@ -7424,7 +7411,7 @@ var _user$project$Components_FilterList_Main$view = F2(
 										]),
 									_elm_lang$core$Native_List.fromArray(
 										[
-											A2(_user$project$Components_FilterList_Main$filterLink, _user$project$Components_FilterList_Main$Incompleted, model)
+											A2(_user$project$Components_FilterList_Main$filterLink, _user$project$Components_FilterList_Main$visibilityOptions.incompleted, model)
 										])),
 									A2(
 									_elm_lang$html$Html$li,
@@ -7435,12 +7422,13 @@ var _user$project$Components_FilterList_Main$view = F2(
 										]),
 									_elm_lang$core$Native_List.fromArray(
 										[
-											A2(_user$project$Components_FilterList_Main$filterLink, _user$project$Components_FilterList_Main$Completed, model)
+											A2(_user$project$Components_FilterList_Main$filterLink, _user$project$Components_FilterList_Main$visibilityOptions.completed, model)
 										]))
 								]))
 						]))
 				]));
 	});
+var _user$project$Components_FilterList_Main$NoOp = {ctor: 'NoOp'};
 
 var _user$project$Components_Task_Styles$delete = _elm_lang$core$Native_List.fromArray(
 	[
@@ -7800,66 +7788,100 @@ var _user$project$Helpers_Main$newTasks = F2(
 			{newTask: newTaskForm});
 	});
 
-var _user$project$Main$update = F2(
+var _user$project$Todo$update = F2(
 	function (action, model) {
 		var _p0 = action;
 		switch (_p0.ctor) {
 			case 'NoOp':
-				return model;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
 			case 'FormActions':
 				var newTaskForm = A2(_user$project$Components_Form_Main$update, _p0._0, model.newTask);
 				var newModel = A2(_user$project$Helpers_Main$newTasks, model, newTaskForm);
-				return newModel;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					newModel,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
 			case 'ListActions':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{
-						tasks: A2(_user$project$Components_List_Main$update, _p0._0, model.tasks)
-					});
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tasks: A2(_user$project$Components_List_Main$update, _p0._0, model.tasks)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
 			default:
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{
-						visibility: A2(_user$project$Components_FilterList_Main$update, _p0._0, model.visibility)
-					});
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							visibility: A2(_user$project$Components_FilterList_Main$update, _p0._0, model.visibility)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
 		}
 	});
-var _user$project$Main$visibleTasks = function (model) {
-	var _p1 = model.visibility;
-	switch (_p1.ctor) {
-		case 'All':
-			return model.tasks;
-		case 'Incompleted':
-			return A2(
-				_elm_lang$core$List$filter,
-				function (task) {
-					return _elm_lang$core$Basics$not(task.completed);
-				},
-				model.tasks);
-		default:
-			return A2(
-				_elm_lang$core$List$filter,
-				function (task) {
-					return task.completed;
-				},
-				model.tasks);
-	}
+var _user$project$Todo$emptyModel = {tasks: _user$project$Components_List_Main$init, newTask: _user$project$Components_Form_Main$init, visibility: _user$project$Components_FilterList_Main$init};
+var _user$project$Todo$init = function (savedModel) {
+	return A2(
+		_elm_lang$core$Platform_Cmd_ops['!'],
+		A2(_elm_lang$core$Maybe$withDefault, _user$project$Todo$emptyModel, savedModel),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
 };
-var _user$project$Main$init = {tasks: _user$project$Components_List_Main$init, newTask: _user$project$Components_Form_Main$init, visibility: _user$project$Components_FilterList_Main$init};
-var _user$project$Main$Model = F3(
+var _user$project$Todo$setStorage = _elm_lang$core$Native_Platform.outgoingPort(
+	'setStorage',
+	function (v) {
+		return {
+			tasks: _elm_lang$core$Native_List.toArray(v.tasks).map(
+				function (v) {
+					return {description: v.description, id: v.id, completed: v.completed};
+				}),
+			newTask: {
+				task: {description: v.newTask.task.description, id: v.newTask.task.id, completed: v.newTask.task.completed},
+				hasError: v.newTask.hasError,
+				error: v.newTask.error,
+				nextId: v.newTask.nextId,
+				saveTask: v.newTask.saveTask
+			},
+			visibility: v.visibility
+		};
+	});
+var _user$project$Todo$withSetStorage = function (_p1) {
+	var _p2 = _p1;
+	var _p3 = _p2._0;
+	return {
+		ctor: '_Tuple2',
+		_0: _p3,
+		_1: _elm_lang$core$Platform_Cmd$batch(
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$Todo$setStorage(_p3),
+					_p2._1
+				]))
+	};
+};
+var _user$project$Todo$Model = F3(
 	function (a, b, c) {
 		return {tasks: a, newTask: b, visibility: c};
 	});
-var _user$project$Main$FilterActions = function (a) {
+var _user$project$Todo$FilterActions = function (a) {
 	return {ctor: 'FilterActions', _0: a};
 };
-var _user$project$Main$ListActions = function (a) {
+var _user$project$Todo$ListActions = function (a) {
 	return {ctor: 'ListActions', _0: a};
 };
-var _user$project$Main$FormActions = function (a) {
+var _user$project$Todo$FormActions = function (a) {
 	return {ctor: 'FormActions', _0: a};
 };
-var _user$project$Main$view = function (model) {
+var _user$project$Todo$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -7871,28 +7893,132 @@ var _user$project$Main$view = function (model) {
 			[
 				A2(
 				_elm_lang$html$Html_App$map,
-				_user$project$Main$FormActions,
+				_user$project$Todo$FormActions,
 				_user$project$Components_Form_Main$view(model.newTask)),
 				A2(
 				_elm_lang$html$Html_App$map,
-				_user$project$Main$ListActions,
+				_user$project$Todo$ListActions,
 				_user$project$Components_List_Main$view(
-					_user$project$Main$visibleTasks(model))),
+					A2(_user$project$Components_FilterList_Main$visibleTasks, model.visibility, model.tasks))),
 				A2(
 				_elm_lang$html$Html_App$map,
-				_user$project$Main$FilterActions,
+				_user$project$Todo$FilterActions,
 				A2(_user$project$Components_FilterList_Main$view, model.visibility, model.tasks))
 			]));
 };
-var _user$project$Main$main = {
-	main: _elm_lang$html$Html_App$beginnerProgram(
-		{model: _user$project$Main$init, update: _user$project$Main$update, view: _user$project$Main$view})
+var _user$project$Todo$main = {
+	main: _elm_lang$html$Html_App$programWithFlags(
+		{
+			init: _user$project$Todo$init,
+			update: F2(
+				function (msg, model) {
+					return _user$project$Todo$withSetStorage(
+						A2(_user$project$Todo$update, msg, model));
+				}),
+			view: _user$project$Todo$view,
+			subscriptions: function (_p4) {
+				return _elm_lang$core$Platform_Sub$none;
+			}
+		}),
+	flags: _elm_lang$core$Json_Decode$oneOf(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$core$Json_Decode$null(_elm_lang$core$Maybe$Nothing),
+				A2(
+				_elm_lang$core$Json_Decode$map,
+				_elm_lang$core$Maybe$Just,
+				A2(
+					_elm_lang$core$Json_Decode$andThen,
+					A2(
+						_elm_lang$core$Json_Decode_ops[':='],
+						'newTask',
+						A2(
+							_elm_lang$core$Json_Decode$andThen,
+							A2(_elm_lang$core$Json_Decode_ops[':='], 'nextId', _elm_lang$core$Json_Decode$int),
+							function (nextId) {
+								return A2(
+									_elm_lang$core$Json_Decode$andThen,
+									A2(_elm_lang$core$Json_Decode_ops[':='], 'saveTask', _elm_lang$core$Json_Decode$bool),
+									function (saveTask) {
+										return A2(
+											_elm_lang$core$Json_Decode$andThen,
+											A2(_elm_lang$core$Json_Decode_ops[':='], 'error', _elm_lang$core$Json_Decode$string),
+											function (error) {
+												return A2(
+													_elm_lang$core$Json_Decode$andThen,
+													A2(_elm_lang$core$Json_Decode_ops[':='], 'hasError', _elm_lang$core$Json_Decode$bool),
+													function (hasError) {
+														return A2(
+															_elm_lang$core$Json_Decode$andThen,
+															A2(
+																_elm_lang$core$Json_Decode_ops[':='],
+																'task',
+																A2(
+																	_elm_lang$core$Json_Decode$andThen,
+																	A2(_elm_lang$core$Json_Decode_ops[':='], 'completed', _elm_lang$core$Json_Decode$bool),
+																	function (completed) {
+																		return A2(
+																			_elm_lang$core$Json_Decode$andThen,
+																			A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$int),
+																			function (id) {
+																				return A2(
+																					_elm_lang$core$Json_Decode$andThen,
+																					A2(_elm_lang$core$Json_Decode_ops[':='], 'description', _elm_lang$core$Json_Decode$string),
+																					function (description) {
+																						return _elm_lang$core$Json_Decode$succeed(
+																							{completed: completed, id: id, description: description});
+																					});
+																			});
+																	})),
+															function (task) {
+																return _elm_lang$core$Json_Decode$succeed(
+																	{nextId: nextId, saveTask: saveTask, error: error, hasError: hasError, task: task});
+															});
+													});
+											});
+									});
+							})),
+					function (newTask) {
+						return A2(
+							_elm_lang$core$Json_Decode$andThen,
+							A2(
+								_elm_lang$core$Json_Decode_ops[':='],
+								'tasks',
+								_elm_lang$core$Json_Decode$list(
+									A2(
+										_elm_lang$core$Json_Decode$andThen,
+										A2(_elm_lang$core$Json_Decode_ops[':='], 'completed', _elm_lang$core$Json_Decode$bool),
+										function (completed) {
+											return A2(
+												_elm_lang$core$Json_Decode$andThen,
+												A2(_elm_lang$core$Json_Decode_ops[':='], 'description', _elm_lang$core$Json_Decode$string),
+												function (description) {
+													return A2(
+														_elm_lang$core$Json_Decode$andThen,
+														A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$int),
+														function (id) {
+															return _elm_lang$core$Json_Decode$succeed(
+																{completed: completed, description: description, id: id});
+														});
+												});
+										}))),
+							function (tasks) {
+								return A2(
+									_elm_lang$core$Json_Decode$andThen,
+									A2(_elm_lang$core$Json_Decode_ops[':='], 'visibility', _elm_lang$core$Json_Decode$string),
+									function (visibility) {
+										return _elm_lang$core$Json_Decode$succeed(
+											{newTask: newTask, tasks: tasks, visibility: visibility});
+									});
+							});
+					}))
+			]))
 };
-var _user$project$Main$NoOp = {ctor: 'NoOp'};
+var _user$project$Todo$NoOp = {ctor: 'NoOp'};
 
 var Elm = {};
-Elm['Main'] = Elm['Main'] || {};
-_elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _user$project$Main$main === 'undefined' ? null : _user$project$Main$main);
+Elm['Todo'] = Elm['Todo'] || {};
+_elm_lang$core$Native_Platform.addPublicModule(Elm['Todo'], 'Todo', typeof _user$project$Todo$main === 'undefined' ? null : _user$project$Todo$main);
 
 if (typeof define === "function" && define['amd'])
 {

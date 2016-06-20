@@ -10,10 +10,10 @@
     <script>
       var storedState = localStorage.getItem('todo');
       var startingState = storedState ? JSON.parse(storedState) : null;
-      var app = Elm.Main.fullscreen();
-      // app.ports.setStorage.subscribe(function(state) {
-      //       localStorage.setItem('elm-todo-state', JSON.stringify(state));
-      // });
+      var app = Elm.Todo.fullscreen(startingState);
+      app.ports.setStorage.subscribe(function(state) {
+        localStorage.setItem('todo', JSON.stringify(state));
+      });
     </script>
   </body>
 </html>

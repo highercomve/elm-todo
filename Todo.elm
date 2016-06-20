@@ -1,3 +1,5 @@
+port module Todo exposing (..)
+
 import Html exposing (..)
 import Html.Attributes as Attr
 import Html.App as App
@@ -8,11 +10,17 @@ import Helpers.Main as Helpers
 import Helpers.Styles as AppStyles
 
 main =
-  App.beginnerProgram
-    { model = init
-    , update = update
+  App.programWithFlags
+    { init = init
+    , update = (\msg model -> withSetStorage (update msg model))
     , view = view
+    , subscriptions = \_ -> Sub.none
     }
+
+port setStorage : Model -> Cmd msg
+
+withSetStorage (model, cmds) =
+  (model, Cmd.batch [setStorage model, cmds] )
 
 type Actions 
   = NoOp
@@ -23,49 +31,40 @@ type Actions
 type alias Model = 
   { tasks: TodoList.Model
   , newTask: TodoForm.Model
-  , visibility: TodoFilter.VisibilityOptions
+  , visibility: TodoFilter.Model
   }
 
-init : Model
-init = 
+emptyModel =
   { tasks = TodoList.init
   , newTask = TodoForm.init
   , visibility = TodoFilter.init
   }
 
-visibleTasks : Model -> TodoList.Model
-visibleTasks model =
-  case model.visibility of 
-    TodoFilter.All ->
-      model.tasks
-    
-    TodoFilter.Incompleted ->
-      List.filter (\task -> not task.completed) model.tasks
 
-    TodoFilter.Completed -> 
-      List.filter (\task -> task.completed) model.tasks
-
+init savedModel =
+  Maybe.withDefault emptyModel savedModel ! []
+  
 update action model = 
   case action of
     NoOp -> 
-      model
+      model ! []
    
     FormActions msg -> 
       let 
         newTaskForm = TodoForm.update msg model.newTask   
         newModel = Helpers.newTasks model newTaskForm
       in
-        newModel
+        newModel ! [] 
     
     ListActions msg -> 
       { model 
       | tasks = TodoList.update msg model.tasks
-      }
+      } ! []
 
     FilterActions msg -> 
       { model 
       | visibility = TodoFilter.update msg model.visibility
-      }
+      } ! []
 
 view model =
   div 
@@ -73,7 +72,7 @@ view model =
     , Attr.style AppStyles.app
     ] 
     [ App.map FormActions (TodoForm.view model.newTask)
-    , App.map ListActions (TodoList.view (visibleTasks model))
+    , App.map ListActions (TodoList.view (TodoFilter.visibleTasks model.visibility model.tasks))
     , App.map FilterActions (TodoFilter.view model.visibility model.tasks)
     ]
 

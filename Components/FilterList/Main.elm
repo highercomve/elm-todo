@@ -4,16 +4,19 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import String
+import Dict
 
 type Actions 
   = NoOp
-  | ChangeFilter VisibilityOptions
+  | ChangeFilter String
 
-type VisibilityOptions = All
-  | Incompleted
-  | Completed
+visibilityOptions =
+  { incompleted =  "Incompleted"
+  , all = "All"
+  , completed = "Completed"
+  }
 
-type alias Model = VisibilityOptions
+type alias Model = String
 
 update action model = 
   case action of
@@ -24,53 +27,44 @@ update action model =
       filter
 
 init =
-  All
-
-filterToString filter =
-  case filter of 
-    All ->
-      "All"
-
-    Incompleted ->
-      "Pending"
-
-    Completed ->
-      "Done"
-
+  visibilityOptions.all
+   
 filterLink filter actualFilter =
   a 
     [ onClick (ChangeFilter filter)
     , style (Styles.link (filter == actualFilter))
     ]
-    [ text (filterToString filter) ]
+    [ text filter ]
+
+visibleTasks filter tasks = 
+    case filter of
+      "Completed" -> 
+        List.filter (\task -> task.completed) tasks 
+
+      "Incompleted" -> 
+        List.filter (\task -> not task.completed) tasks
+
+      _ -> 
+        tasks
 
 taskCounter filter tasks = 
-  case filter of
-    All -> 
-      List.length tasks
-
-    Completed -> 
-      List.filter (\task -> task.completed) tasks 
-      |> List.length
-
-    Incompleted -> 
-      List.filter (\task -> not task.completed) tasks
-      |> List.length
+  visibleTasks filter tasks |> List.length
 
 counterMessages tasks =
   let 
-    pending = taskCounter Incompleted tasks
+    pending = taskCounter visibilityOptions.incompleted tasks
+    all = taskCounter visibilityOptions.all tasks
     task_ = if pending > 1 then "tasks " else "task"
   in
     div 
       [ style Styles.counters ]
       [ span []
-          [ text (toString (taskCounter Incompleted tasks))
+          [ text (toString pending)
           , text (" pending " ++ task_)
           ]
       , span []
           [ text ", of "
-          , text (toString (taskCounter All tasks))
+          , text (toString all)
           ]
       ]
 
@@ -87,17 +81,17 @@ view model tasks =
                   [ class "filter-link" 
                   , style Styles.linkContainer
                   ] 
-                  [ filterLink All model ]
+                  [ filterLink visibilityOptions.all model ]
               , li 
                   [ class "filter-link" 
                   , style Styles.linkContainer
                   ] 
-                  [ filterLink Incompleted  model ]
+                  [ filterLink visibilityOptions.incompleted  model ]
               , li 
                   [ class "filter-link" 
                   , style Styles.linkContainer
                   ] 
-                  [ filterLink Completed model ]
+                  [ filterLink visibilityOptions.completed model ]
               ]
         ]
     ]
