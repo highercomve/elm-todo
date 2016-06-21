@@ -3,6 +3,7 @@
 var Elm = require( '../Todo.elm' );
 
 function init() {
+  var storedState = localStorage.getItem('todo');
   var startingState = storedState ? JSON.parse(storedState) : null;
   var app = Elm.Todo.fullscreen(startingState);
   app.ports.setStorage.subscribe(function(state) {
