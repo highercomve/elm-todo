@@ -1,6 +1,6 @@
-module Components.Form.Main exposing (Model, Actions, init, update, view) 
+module Components.Form.Main exposing (Model, Actions, init, update, view)
 import Components.Task.Main as Task
-import Components.Form.Styles as Styles 
+import Components.Form.Styles as Styles
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
@@ -8,7 +8,7 @@ import String
 import Json.Decode as Json
 
 -- Model
-type alias Model = 
+type alias Model =
   { task : Task.Model
   , hasError: Bool
   , error: String
@@ -17,7 +17,7 @@ type alias Model =
   }
 
 init: Model
-init = 
+init =
   { hasError = False
   , error = ""
   , nextId = 1
@@ -25,7 +25,7 @@ init =
   , saveTask = False
   }
 
--- Actions 
+-- Actions
 type Actions = NoOp
   | SetNewTaskDescription String
   | SetError String
@@ -33,50 +33,50 @@ type Actions = NoOp
 
 setTaskId : Task.Model -> Int -> Task.Model
 setTaskId task nextId =
-  { task |
-  id = nextId
+  { task
+  | id = nextId
   }
 
 changeDescription : Task.Model -> String -> Task.Model
-changeDescription task str = 
-  { task | 
-    description = str
+changeDescription task str =
+  { task
+  | description = str
   }
 
 update action model =
   case action of
-    NoOp -> 
+    NoOp ->
       model
 
     SetNewTaskDescription str ->
-      { model | 
-        task = changeDescription model.task str
+      { model
+      | task = changeDescription model.task str
       }
 
     SetError str ->
-      { model |
-        hasError = True
+      { model
+      | hasError = True
       , error = str
       , saveTask = False
       }
 
-    AddTask -> 
-      { model |
-        task = setTaskId model.task model.nextId
+    AddTask ->
+      { model
+      | task = setTaskId model.task model.nextId
       , hasError = False
       , saveTask = True
       , nextId = model.nextId + 1
-      } 
+      }
 
 
 view model =
   div [ style Styles.general ]
-    [ header 
-        [ class "todo-header" 
+    [ header
+        [ class "todo-header"
         , style Styles.header
         ]
-        [ div 
-            [ class "todo-form" 
+        [ div
+            [ class "todo-form"
             , style Styles.form
             ]
             [ input
@@ -86,27 +86,27 @@ view model =
                 , autofocus True
                 , value model.task.description
                 , name "newTodo"
-                , on "input" (Json.map SetNewTaskDescription targetValue)        
+                , on "input" (Json.map SetNewTaskDescription targetValue)
                 , onEnter model
                 ]
                 []
-            , div 
+            , div
                 [ class "form-errors"]
                 (showError model)
             ]
         ]
     ]
 
-showError model = 
-  if model.hasError then 
+showError model =
+  if model.hasError then
     [ p [] [ text model.error ] ]
-  else 
+  else
     []
-  
+
 onEnter model =
   let
-    tagger code = 
-      if code == 13 then submitOrError model       
+    tagger code =
+      if code == 13 then submitOrError model
       else NoOp
   in
     on "keyup" (Json.map tagger keyCode)
@@ -114,7 +114,5 @@ onEnter model =
 submitOrError model =
   if model.task.description == "" then
     SetError "You must write something"
-  else 
+  else
     AddTask
-      
-

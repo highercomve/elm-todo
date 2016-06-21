@@ -9,7 +9,7 @@ float =
   , ("box-shadow", "0 0px 1px 0 rgba(0,0,0,0.3)")
   ]
 
-container = 
+container =
   [ ("display", "flex")
   , ("flex-wrap", "no-wrap")
   , ("justify-content", "space-between")
@@ -20,6 +20,7 @@ container =
 
 counters =
   [ ("flex", "0 1 33%")
+  , ("padding", "0 1em")
   ]
 
 links =
@@ -32,7 +33,7 @@ links =
   , ("justify-content", "space-between")
   ]
 
-linkContainer = 
+linkContainer =
   [ ("flex", "1 0 auto")
   , ("text-align", "center")
   ]
@@ -42,6 +43,4 @@ link active =
   , ("display", "block")
   , ("color", "white")
   , ("padding", "0.8em 1em")
-  ] 
-
-
+  ]

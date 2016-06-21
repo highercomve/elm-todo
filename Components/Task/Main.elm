@@ -8,10 +8,10 @@ import Components.Task.Styles as AppStyles
 import String
 
 type Actions = NoOp
-  | Toggle 
+  | Toggle
   | Delete
 
-type alias Model = 
+type alias Model =
   { description : String
   , id : Int
   , completed : Bool
@@ -23,59 +23,59 @@ init =
   , completed = False
   }
 
-update action model = 
-  case action of 
-    NoOp -> 
+update action model =
+  case action of
+    NoOp ->
       Just model
 
-    Toggle -> 
-      Just { model |
-        completed = not model.completed
-      }
+    Toggle ->
+      Just
+        { model
+        | completed = not model.completed
+        }
 
-    Delete -> 
+    Delete ->
       Nothing
 
 toggleOnClick =
-  Toggle 
+  Toggle
 
-deleteOnClick = 
+deleteOnClick =
   Delete
 
 setStyle completed =
   if completed == True then "ready" else "not-ready"
 
-checkButton completed = 
-  input 
-    [ type' "checkbox" 
+checkButton completed =
+  input
+    [ type' "checkbox"
     , checked completed
     , style AppStyles.check
-    , onClick toggleOnClick    
+    , onClick toggleOnClick
     ]
     []
 
 taskDescription description =
-  div 
+  div
     [ style AppStyles.description ]
     [ text description ]
 
 deleteButton =
-  button 
-    [ onClick deleteOnClick 
+  button
+    [ onClick deleteOnClick
     , style AppStyles.delete
     ]
     [ text "x" ]
 
 view task =
-  li 
-    [ class (setStyle task.completed) ] 
-    [ div 
+  li
+    [ class (setStyle task.completed) ]
+    [ div
         [ class "todo-task"
         , style AppStyles.general
         ]
         [ checkButton task.completed
         , taskDescription task.description
-        , deleteButton 
+        , deleteButton
         ]
     ]
-

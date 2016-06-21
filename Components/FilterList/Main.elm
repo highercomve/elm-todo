@@ -6,19 +6,19 @@ import Html.Events exposing (..)
 import String
 import Dict
 
-type Actions 
+type Actions
   = NoOp
   | ChangeFilter String
 
 visibilityOptions =
-  { incompleted =  "Incompleted"
+  { incompleted =  "Pending"
   , all = "All"
   , completed = "Completed"
   }
 
 type alias Model = String
 
-update action model = 
+update action model =
   case action of
     NoOp ->
       model
@@ -28,71 +28,73 @@ update action model =
 
 init =
   visibilityOptions.all
-   
+
 filterLink filter actualFilter =
-  a 
+  a
     [ onClick (ChangeFilter filter)
     , style (Styles.link (filter == actualFilter))
     ]
     [ text filter ]
 
-visibleTasks filter tasks = 
+visibleTasks filter tasks =
     case filter of
-      "Completed" -> 
-        List.filter (\task -> task.completed) tasks 
+      "Completed" ->
+        tasks
+          |> List.filter (\task -> task.completed)
 
-      "Incompleted" -> 
-        List.filter (\task -> not task.completed) tasks
+      "Pending" ->
+        tasks
+          |> List.filter (\task -> not task.completed)
 
-      _ -> 
+      _ ->
         tasks
 
-taskCounter filter tasks = 
-  visibleTasks filter tasks |> List.length
+taskCounter filter tasks =
+  visibleTasks filter tasks
+    |> List.length
 
 counterMessages tasks =
-  let 
+  let
     pending = taskCounter visibilityOptions.incompleted tasks
     all = taskCounter visibilityOptions.all tasks
-    task_ = if pending > 1 then "tasks " else "task"
+    task_ = if pending > 1 then " tasks " else " task "
   in
-    div 
+    div
       [ style Styles.counters ]
       [ span []
           [ text (toString pending)
-          , text (" pending " ++ task_)
+          , text (task_)
           ]
       , span []
-          [ text ", of "
+          [ text " of "
           , text (toString all)
           ]
       ]
 
 view model tasks =
-  div 
+  div
     [ style Styles.float ]
     [ div [style Styles.container]
-        [ counterMessages tasks 
-          , ul 
-              [ class "filter-links" 
+        [ counterMessages tasks
+          , ul
+              [ class "filter-links"
               , style Styles.links
               ]
-              [ li 
-                  [ class "filter-link" 
+              [ li
+                  [ class "filter-link"
                   , style Styles.linkContainer
-                  ] 
+                  ]
                   [ filterLink visibilityOptions.all model ]
-              , li 
-                  [ class "filter-link" 
+              , li
+                  [ class "filter-link"
                   , style Styles.linkContainer
-                  ] 
+                  ]
                   [ filterLink visibilityOptions.incompleted  model ]
-              , li 
-                  [ class "filter-link" 
+              , li
+                  [ class "filter-link"
                   , style Styles.linkContainer
-                  ] 
+                  ]
                   [ filterLink visibilityOptions.completed model ]
               ]
         ]
     ]
-        

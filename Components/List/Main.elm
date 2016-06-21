@@ -15,28 +15,27 @@ type alias Model = List Task.Model
 init : Model
 init = []
 
-updateHelper targetId msg task = 
+updateHelper targetId msg task =
   if task.id == targetId then
     Task.update msg task
-  else 
+  else
     Just task
- 
-update action model = 
+
+update action model =
   case action of
     NoOp ->
       model
-    
-    ModifyTask id action -> 
-      List.filterMap (updateHelper id action) model 
 
-mapTodos task = 
+    ModifyTask id action ->
+      model
+        |> List.filterMap (updateHelper id action)
+
+mapTodos task =
   App.map (ModifyTask task.id) (Task.view task)
 
 view model =
-  ul 
+  ul
     [ Attr.class "todo-list"
     , Attr.style Styles.general
-    ] 
+    ]
     (List.map mapTodos model)
-
-
