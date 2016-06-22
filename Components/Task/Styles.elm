@@ -16,7 +16,7 @@ check =
   ]
 
 description = 
-  [ ("flex", "1 0 auto")
+  [ ("flex", "1 1 auto")
   , ("padding", "0 0.5em")
   ]
 
