@@ -6,8 +6,8 @@ import Html.App as App
 import Components.Form.Main as TodoForm
 import Components.List.Main as TodoList
 import Components.FilterList.Main as TodoFilter
-import Helpers.Main as Helpers
-import Helpers.Styles as AppStyles
+import Components.Task.Main as TodoTask exposing (Model) 
+import Shared.Styles as AppStyles
 
 main =
   App.programWithFlags
@@ -43,7 +43,15 @@ emptyModel =
 
 init savedModel =
   Maybe.withDefault emptyModel savedModel ! []
-  
+
+newTaskList tasks newTask =
+  case newTask of
+    Nothing -> 
+      tasks
+    Just new -> 
+      tasks ++ [new]
+
+update : Actions -> Model -> (Model, Cmd a)
 update action model = 
   case action of
     NoOp -> 
@@ -51,10 +59,12 @@ update action model =
    
     FormActions msg -> 
       let 
-        newTaskForm = TodoForm.update msg model.newTask   
-        newModel = Helpers.newTasks model newTaskForm
+        (newTaskForm, task) = TodoForm.update msg model.newTask   
       in
-        newModel ! [] 
+        { model
+        | newTask = newTaskForm
+        , tasks = newTaskList model.tasks task 
+        } ! [] 
     
     ListActions msg -> 
       { model 
@@ -65,6 +75,7 @@ update action model =
       { model 
       | visibility = TodoFilter.update msg model.visibility
       } ! []
+
 
 view model =
   div 

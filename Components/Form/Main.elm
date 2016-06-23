@@ -1,19 +1,17 @@
 module Components.Form.Main exposing (Model, Actions, init, update, view)
-import Components.Task.Main as Task
+import Components.Task.Main as TodoTask
 import Components.Form.Styles as Styles
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
-import String
 import Json.Decode as Json
 
 -- Model
 type alias Model =
-  { task : Task.Model
+  { task : TodoTask.Model
   , hasError: Bool
   , error: String
   , nextId: Int
-  , saveTask: Bool
   }
 
 init: Model
@@ -21,23 +19,26 @@ init =
   { hasError = False
   , error = ""
   , nextId = 1
-  , task = Task.init
-  , saveTask = False
+  , task = TodoTask.init
   }
 
+
+type Dispatch = Save
+
 -- Actions
-type Actions = NoOp
+type Actions 
+  = NoOp
   | SetNewTaskDescription String
   | SetError String
   | AddTask
 
-setTaskId : Task.Model -> Int -> Task.Model
+setTaskId : TodoTask.Model -> Int -> TodoTask.Model
 setTaskId task nextId =
   { task
   | id = nextId
   }
 
-changeDescription : Task.Model -> String -> Task.Model
+changeDescription : TodoTask.Model -> String -> TodoTask.Model
 changeDescription task str =
   { task
   | description = str
@@ -46,27 +47,32 @@ changeDescription task str =
 update action model =
   case action of
     NoOp ->
-      model
+      (model, Nothing)
 
     SetNewTaskDescription str ->
-      { model
-      | task = changeDescription model.task str
-      }
-
+      ( { model
+        | task = changeDescription model.task str
+        }
+      , Nothing
+      )
+    
     SetError str ->
-      { model
-      | hasError = True
-      , error = str
-      , saveTask = False
-      }
+      ( { model
+        | hasError = True
+        , error = str
+        }
+      , Nothing
+      )
 
     AddTask ->
-      { model
-      | task = setTaskId model.task model.nextId
-      , hasError = False
-      , saveTask = True
-      , nextId = model.nextId + 1
-      }
+      let 
+        newTask = setTaskId model.task model.nextId
+        newModel = 
+          { init
+          | nextId = model.nextId + 1
+          }
+      in
+        (newModel, Just newTask)
 
 
 view model =

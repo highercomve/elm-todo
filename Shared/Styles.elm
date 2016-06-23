@@ -1,4 +1,4 @@
-module Helpers.Styles exposing (..)
+module Shared.Styles exposing (..)
 
 app = 
   [ ("max-width", "500px")

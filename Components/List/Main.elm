@@ -4,8 +4,7 @@ import Components.List.Styles as Styles
 import Html exposing (ul)
 import Html.Attributes as Attr
 import Html.App as App
-import Helpers.Styles as Styles
-import String
+import Shared.Styles as Styles
 
 type Actions = NoOp
   | ModifyTask Int Task.Actions
