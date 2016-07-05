@@ -26,15 +26,21 @@ update action model =
       model
 
     ModifyTask id action ->
-      model
-        |> List.filterMap (updateHelper id action)
+      let 
+        updateMap = updateHelper id action
+      in
+        model
+          |> List.filterMap updateMap
+
 
 mapTodos task =
-  App.map (ModifyTask task.id) (Task.view task)
+  Task.view task
+    |> App.map (ModifyTask task.id)
+
 
 view model =
-  ul
-    [ Attr.class "todo-list"
-    , Attr.style Styles.general
-    ]
-    (List.map mapTodos model)
+  List.map mapTodos model
+    |> ul
+        [ Attr.class "todo-list"
+        , Attr.style Styles.general
+        ]
